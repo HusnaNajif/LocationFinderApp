@@ -29,6 +29,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
@@ -55,17 +56,17 @@ public class specificLocationActivity extends AppCompatActivity implements Locat
         permissions.add(ACCESS_COARSE_LOCATION);
 
         permissionsToRequest = findUnAskedPermissions(permissions);
-        btndisplay=findViewById(R.id.btndisplay);
-        pbround=findViewById(R.id.pbround);
+        btndisplay = findViewById(R.id.btndisplay);
+        pbround = findViewById(R.id.pbround);
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
 
-                if (permissionsToRequest.size() > 0)
-                    requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
-            }
+            if (permissionsToRequest.size() > 0)
+                requestPermissions((String[]) permissionsToRequest.toArray(new String[permissionsToRequest.size()]), ALL_PERMISSIONS_RESULT);
+        }
 
-            btndisplay.setOnClickListener(new View.OnClickListener() {
+        btndisplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -77,6 +78,7 @@ public class specificLocationActivity extends AppCompatActivity implements Locat
             }
         });
     }
+
     private ArrayList findUnAskedPermissions(ArrayList wanted) {
         ArrayList result = new ArrayList();
 
@@ -141,6 +143,7 @@ public class specificLocationActivity extends AppCompatActivity implements Locat
         }
 
     }
+
     public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
@@ -182,11 +185,20 @@ public class specificLocationActivity extends AppCompatActivity implements Locat
     }
 
 
-    @SuppressLint("MissingPermission")
     private void getLocation() {
         try {
             locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,100,5,specificLocationActivity.this);
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 5, specificLocationActivity.this);
 
         }catch (Exception e){
             e.printStackTrace();
